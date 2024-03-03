@@ -19,3 +19,10 @@
 
 # Go workspace file
 go.work
+
+tmp/
+.vscode/
+bin/*
+!.gitkeep
+.env.local
+db/
