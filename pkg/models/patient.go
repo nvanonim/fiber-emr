@@ -10,7 +10,7 @@ import (
 type Patient struct {
 	gorm.Model
 	ID                  uint      `json:"id" gorm:"primaryKey"` // gorm:"primaryKey" is used to set the primary key
-	MedicalRecordNumber string    `json:"medical_record_number"`
+	MedicalRecordNumber string    `json:"medical_record_number" gorm:"unique"`
 	Name                string    `json:"name"`
 	Gender              uint      `json:"gender"`
 	BirthDate           string    `json:"birth_date"`

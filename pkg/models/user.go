@@ -10,7 +10,7 @@ import (
 type User struct {
 	gorm.Model
 	ID        uint      `json:"id" gorm:"primaryKey"` // gorm:"primaryKey" is used to set the primary key
-	Username  string    `json:"username"`
+	Username  string    `json:"username" gorm:"unique"`
 	Password  string    `json:"password"`
 	Name      string    `json:"name"`
 	CreatedAt time.Time `json:"-"`
@@ -28,6 +28,7 @@ func (User) TableName() string {
 type UserResponse struct {
 	Username string `json:"username"`
 	Name     string `json:"name"`
+	Token    string `json:"token"`
 }
 
 // UserLogin is the request for the user login

@@ -18,10 +18,10 @@ type AppointmentDataType struct {
 
 // Appointment Data Type Status Enum
 const (
-	OBSTETRICS = "OBSTETRICS" // for Kebidanan
+	ADT_Obstetrics = "OBSTETRICS" // for Kebidanan
 	// SOAP - for Kandungan
-	SUBJECTIVE = "SUBJECTIVE"
-	OBJECTIVE  = "OBJECTIVE"
-	ASSESSMENT = "ASSESSMENT"
-	PLAN       = "PLAN"
+	ADT_Subjective = "SUBJECTIVE"
+	ADT_Objective  = "OBJECTIVE"
+	ADT_Assessment = "ASSESSMENT"
+	ADT_Plan       = "PLAN"
 )

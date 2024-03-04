@@ -21,9 +21,9 @@ type AppointmentType struct {
 
 // Appointment Type Status Enum
 const (
-	ACTIVE   = "ACTIVE"
-	INACTIVE = "INACTIVE"
-	DELETED  = "DELETED"
+	AT_Active   = "ACTIVE"
+	AT_Inactive = "INACTIVE"
+	AT_Deleted  = "DELETED"
 )
 
 // AppointmentTypeResponse is the response for the appointment type model
