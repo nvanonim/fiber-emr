@@ -26,9 +26,10 @@ func (User) TableName() string {
 
 // UserResponse is the response for the user model after login
 type UserResponse struct {
-	Username string `json:"username"`
-	Name     string `json:"name"`
-	Token    string `json:"token"`
+	Username       string `json:"username"`
+	Name           string `json:"name"`
+	Token          string `json:"token"`
+	ExpirationTime int64  `json:"expiration_time"`
 }
 
 // UserLogin is the request for the user login

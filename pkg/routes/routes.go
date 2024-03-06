@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/nvanonim/fiber-emr/pkg/controllers"
+	"github.com/nvanonim/fiber-emr/pkg/utils"
 )
 
 // register the routes
@@ -23,9 +24,7 @@ func AuthRoutes(r *gin.Engine) {
 	// auth
 	auth.POST("/login", controllers.Login)
 	auth.POST("/signup", controllers.Signup)
-	auth.GET("/validate", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "validate",
-		})
+	auth.GET("/validate", controllers.Protected(), func(c *gin.Context) {
+		c.JSON(http.StatusOK, utils.GenerateResponse(utils.RC_Success, utils.RM_Success))
 	})
 }

@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/nvanonim/fiber-emr/pkg/configs"
 	"github.com/nvanonim/fiber-emr/pkg/models"
 	"github.com/nvanonim/fiber-emr/pkg/utils"
@@ -99,7 +100,40 @@ func Login(c *gin.Context) {
 		Username: dbUser.Username,
 		Name:     dbUser.Name,
 		Token:    token,
+		// Expiration time in seconds
+		ExpirationTime: int64(utils.JWTExpirationTime.Seconds()),
 	}
 
 	c.JSON(http.StatusOK, utils.GenerateResponse(utils.RC_Success, "Login successful", response))
+}
+
+// Protected HandleFunc
+func Protected() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		tokenString := c.GetHeader("Authorization")
+		if tokenString == "" {
+			c.JSON(http.StatusUnauthorized, utils.GenerateErrorResponse(utils.RC_Unauthorized, utils.RM_Unauthorized))
+			c.Abort()
+			return
+		}
+
+		tokenString = tokenString[7:]
+		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+			return []byte(utils.GetEnv("JWT_SECRET")), nil
+		})
+
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, utils.GenerateErrorResponse(utils.RC_Unauthorized, utils.RM_Unauthorized))
+			c.Abort()
+			return
+		}
+
+		if !token.Valid {
+			c.JSON(http.StatusUnauthorized, utils.GenerateErrorResponse(utils.RC_Unauthorized, utils.RM_Unauthorized))
+			c.Abort()
+			return
+		}
+
+		c.Next()
+	}
 }
