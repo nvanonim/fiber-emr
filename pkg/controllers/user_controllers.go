@@ -1,16 +1,20 @@
 package controllers
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/nvanonim/fiber-emr/pkg/configs"
+	"github.com/nvanonim/fiber-emr/pkg/configs/logger"
 	"github.com/nvanonim/fiber-emr/pkg/models"
+	"github.com/nvanonim/fiber-emr/pkg/repositories"
 	"github.com/nvanonim/fiber-emr/pkg/utils"
 	"golang.org/x/crypto/bcrypt"
 )
+
+var UserRepository = repositories.NewUserRepository()
+var Logger = logger.New()
 
 // Signup
 func Signup(c *gin.Context) {
@@ -19,15 +23,18 @@ func Signup(c *gin.Context) {
 
 	// Bind the user register struct, if the binding fails return an error
 	if err := c.ShouldBindJSON(&userRegister); err != nil {
-		log.Println("Error binding the user register struct: ", err)
+		Logger.Error("Error binding the user register struct: ", err)
 		c.JSON(http.StatusBadRequest, utils.GenerateErrorResponse(utils.RC_InvalidRequest, "Invalid request"))
 		return
 	}
 
 	// check if username is already taken
-	db := configs.GetDB()
-	var dbUser models.User
-	db.Where("username = ?", userRegister.Username).First(&dbUser)
+	dbUser, err := UserRepository.FindByUsername(userRegister.Username)
+	if err != nil {
+		Logger.Error("Error finding the user by username: ", err)
+		c.JSON(http.StatusInternalServerError, utils.GenerateErrorResponse(utils.RC_InternalServerError, "Error finding the user by username"))
+		return
+	}
 
 	if dbUser.ID != 0 {
 		c.JSON(http.StatusConflict, utils.GenerateErrorResponse(utils.RC_DataAlreadyExist, "Username already taken"))
@@ -36,7 +43,7 @@ func Signup(c *gin.Context) {
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(userRegister.Password), bcrypt.DefaultCost)
 	if err != nil {
-		log.Println("Error hashing the password: ", err)
+		Logger.Error("Error hashing the password: ", err)
 		c.JSON(http.StatusInternalServerError, utils.GenerateErrorResponse(utils.RC_InternalServerError, "Error hashing the password"))
 		return
 	}
@@ -50,14 +57,14 @@ func Signup(c *gin.Context) {
 		Password: userRegister.Password,
 	}
 
-	if err := db.Create(&user).Error; err != nil {
-		log.Println("Error creating the user: ", err)
+	if err := UserRepository.Create(&user); err != nil {
+		Logger.Error("Error creating the user: ", err)
 		c.JSON(http.StatusInternalServerError, utils.GenerateErrorResponse(utils.RC_InternalServerError, "Error creating the user"))
 		return
 	}
 
 	// Log the successful user creation
-	log.Printf("User created for username: %s", user.Username)
+	Logger.Infof("User created for username: %s", user.Username)
 
 	c.JSON(http.StatusOK, utils.GenerateResponse(utils.RC_Success, "User created successfully"))
 }
@@ -69,7 +76,7 @@ func Login(c *gin.Context) {
 
 	// Bind the user login struct, if the binding fails return an error
 	if err := c.ShouldBindJSON(&user); err != nil {
-		log.Println("Error binding the user login struct: ", err)
+		Logger.Error("Error binding the user login struct: ", err)
 		c.JSON(http.StatusBadRequest, utils.GenerateErrorResponse(utils.RC_InvalidRequest, "Invalid request"))
 		return
 	}
@@ -91,7 +98,7 @@ func Login(c *gin.Context) {
 
 	token, err := utils.CreateToken(dbUser.ID)
 	if err != nil {
-		log.Println("Error creating the token:", err)
+		Logger.Error("Error creating the token:", err)
 		c.JSON(http.StatusInternalServerError, utils.GenerateErrorResponse(utils.RC_InternalServerError, "Error creating token"))
 		return
 	}
@@ -104,14 +111,18 @@ func Login(c *gin.Context) {
 		ExpirationTime: int64(utils.JWTExpirationTime.Seconds()),
 	}
 
+	Logger.Debugf("User logged in for username: %s", dbUser.Username)
+
 	c.JSON(http.StatusOK, utils.GenerateResponse(utils.RC_Success, "Login successful", response))
 }
 
 // Protected HandleFunc
 func Protected() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		Logger.Info("Protected endpoint accessed")
 		tokenString := c.GetHeader("Authorization")
 		if tokenString == "" {
+			Logger.Error("No token provided")
 			c.JSON(http.StatusUnauthorized, utils.GenerateErrorResponse(utils.RC_Unauthorized, utils.RM_Unauthorized))
 			c.Abort()
 			return
@@ -123,12 +134,14 @@ func Protected() gin.HandlerFunc {
 		})
 
 		if err != nil {
+			Logger.Error("Error parsing the token: ", err)
 			c.JSON(http.StatusUnauthorized, utils.GenerateErrorResponse(utils.RC_Unauthorized, utils.RM_Unauthorized))
 			c.Abort()
 			return
 		}
 
 		if !token.Valid {
+			Logger.Error("Invalid token")
 			c.JSON(http.StatusUnauthorized, utils.GenerateErrorResponse(utils.RC_Unauthorized, utils.RM_Unauthorized))
 			c.Abort()
 			return

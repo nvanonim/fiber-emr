@@ -9,14 +9,14 @@ import (
 // Appointment Data Type Model with created_at and updated_at fields
 type AppointmentDataType struct {
 	gorm.Model
-	ID        uint      `json:"id" gorm:"primaryKey"` // gorm:"primaryKey" is used to set the primary key
-	Name      string    `json:"name"`
-	Status    string    `json:"status"`
-	CreatedAt time.Time `json:"-"`
-	UpdatedAt time.Time `json:"-"`
+	ID        uint           `json:"id" gorm:"primaryKey"` // gorm:"primaryKey" is used to set the primary key
+	Name      string         `json:"name"`
+	CreatedAt time.Time      `json:"-"`
+	UpdatedAt time.Time      `json:"-"`
+	DeleteAt  gorm.DeletedAt `json:"-"`
 }
 
-// Appointment Data Type Status Enum
+// Appointment Data Type Name Enum
 const (
 	ADT_Obstetrics = "OBSTETRICS" // for Kebidanan
 	// SOAP - for Kandungan

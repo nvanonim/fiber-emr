@@ -11,14 +11,15 @@ import (
 
 type AppointmentData struct {
 	gorm.Model
-	ID             uint         `json:"id" gorm:"primaryKey"` // gorm:"primaryKey" is used to set the primary key
-	AppointmentID  uint         `json:"appointment_id"`
-	DataTypeID     uint         `json:"data_type_id"`
-	Images         pgtype.JSONB `json:"images"`
-	Pdf            pgtype.JSONB `json:"pdf"`
-	AdditionalInfo string       `json:"additional_info"`
-	CreatedAt      time.Time    `json:"-"`
-	UpdatedAt      time.Time    `json:"-"`
+	ID             uint           `json:"id" gorm:"primaryKey"` // gorm:"primaryKey" is used to set the primary key
+	AppointmentID  uint           `json:"appointment_id"`
+	DataTypeID     uint           `json:"data_type_id"`
+	Images         pgtype.JSONB   `json:"images"`
+	Pdf            pgtype.JSONB   `json:"pdf"`
+	AdditionalInfo string         `json:"additional_info"`
+	CreatedAt      time.Time      `json:"-"`
+	UpdatedAt      time.Time      `json:"-"`
+	DeletedAt      gorm.DeletedAt `json:"-"`
 }
 
 // AppointmentDataResponse is the response for the appointment data model

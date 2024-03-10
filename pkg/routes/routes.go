@@ -28,3 +28,12 @@ func AuthRoutes(r *gin.Engine) {
 		c.JSON(http.StatusOK, utils.GenerateResponse(utils.RC_Success, utils.RM_Success))
 	})
 }
+
+// func PatientRoutes(r *gin.Engine) {
+// 	patient := r.Group("/patient")
+// 	patient.POST("/create", controllers.CreatePatient)
+// 	patient.GET("/list", controllers.ListPatients)
+// 	patient.GET("/get/:id", controllers.GetPatient)
+// 	patient.PUT("/update/:id", controllers.UpdatePatient)
+// 	patient.DELETE("/delete/:id", controllers.DeletePatient)
+// }

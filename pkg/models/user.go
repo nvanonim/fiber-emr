@@ -9,12 +9,13 @@ import (
 // User Model with created_at and updated_at fields
 type User struct {
 	gorm.Model
-	ID        uint      `json:"id" gorm:"primaryKey"` // gorm:"primaryKey" is used to set the primary key
-	Username  string    `json:"username" gorm:"unique"`
-	Password  string    `json:"password"`
-	Name      string    `json:"name"`
-	CreatedAt time.Time `json:"-"`
-	UpdatedAt time.Time `json:"-"`
+	ID        uint           `json:"id" gorm:"primaryKey"` // gorm:"primaryKey" is used to set the primary key
+	Username  string         `json:"username" gorm:"unique"`
+	Password  string         `json:"password"`
+	Name      string         `json:"name"`
+	CreatedAt time.Time      `json:"-"`
+	UpdatedAt time.Time      `json:"-"`
+	DeletedAt gorm.DeletedAt `json:"-"`
 
 	Appointments []Appointment `json:"appointments"`
 }

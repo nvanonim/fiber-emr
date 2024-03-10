@@ -10,11 +10,12 @@ import (
 // Status is used to set the status of the appointment type, value get from enum (ACTIVE, INACTIVE, DELETED)
 type AppointmentType struct {
 	gorm.Model
-	ID        uint      `json:"id" gorm:"primaryKey"` // gorm:"primaryKey" is used to set the primary key
-	Name      string    `json:"name"`
-	Status    string    `json:"status"`
-	CreatedAt time.Time `json:"-"`
-	UpdatedAt time.Time `json:"-"`
+	ID        uint           `json:"id" gorm:"primaryKey"` // gorm:"primaryKey" is used to set the primary key
+	Name      string         `json:"name"`
+	Status    string         `json:"status"`
+	CreatedAt time.Time      `json:"-"`
+	UpdatedAt time.Time      `json:"-"`
+	DeletedAt gorm.DeletedAt `json:"-"`
 
 	Appointments []Appointment `json:"appointments"`
 }
