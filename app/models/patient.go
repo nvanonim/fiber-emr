@@ -13,7 +13,7 @@ type Patient struct {
 	MedicalRecordNumber string         `json:"medical_record_number" gorm:"unique"`
 	Name                string         `json:"name"`
 	Gender              uint           `json:"gender"`
-	BirthDate           string         `json:"birth_date"`
+	BirthDate           time.Time      `json:"birth_date"`
 	Address             string         `json:"address"`
 	PhoneNumber         string         `json:"phone_number"`
 	CreatedAt           time.Time      `json:"-"`
@@ -21,6 +21,24 @@ type Patient struct {
 	DeletedAt           gorm.DeletedAt `json:"-"`
 
 	Appointments []Appointment `json:"appointments"`
+}
+
+const DOB = "2006-01-02"
+
+// gender constants
+const (
+	GENDER_M = iota
+	GENDER_F
+)
+
+// PatientRequest is the request for the patient model
+type PatientRequest struct {
+	MedicalRecordNumber string `json:"medical_record_number"`
+	Name                string `json:"name"`
+	Gender              uint   `json:"gender"`
+	BirthDate           string `json:"birth_date"`
+	Address             string `json:"address"`
+	PhoneNumber         string `json:"phone_number"`
 }
 
 // PatientResponse is the response for the patient model

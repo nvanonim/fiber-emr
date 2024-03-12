@@ -1,8 +1,8 @@
 package configs
 
 import (
-	"github.com/nvanonim/fiber-emr/pkg/models"
-	"github.com/nvanonim/fiber-emr/pkg/utils"
+	"github.com/nvanonim/fiber-emr/app/models"
+	"github.com/nvanonim/fiber-emr/app/utils"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

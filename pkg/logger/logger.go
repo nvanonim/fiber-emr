@@ -4,8 +4,6 @@ import (
 	"log"
 	"os"
 	"strings"
-
-	"github.com/nvanonim/fiber-emr/pkg/utils"
 )
 
 // LogLevel represents the logging level
@@ -29,7 +27,8 @@ type Logger struct {
 
 // NewLogger returns a new logger
 func New() *Logger {
-	levelStr := strings.ToLower(utils.GetEnvWithDefault("LOG_LEVEL", "info"))
+	levelStr := strings.ToLower(os.Getenv("LOG_LEVEL"))
+
 	logLevel := Info // Default log level
 	if levelStr == "error" {
 		logLevel = Error
