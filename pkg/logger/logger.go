@@ -37,6 +37,7 @@ func New() *Logger {
 	} else if levelStr == "debug" {
 		logLevel = Debug
 	}
+	log.Println("Log level: ", logLevel)
 
 	return &Logger{
 		infoLogger:  log.New(os.Stdout, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile),

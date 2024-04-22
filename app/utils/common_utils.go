@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"os"
 	"regexp"
 	"strconv"
@@ -39,4 +41,12 @@ func ValidatePhoneNumber(phoneNumber string) string {
 		return phone
 	}
 	return ""
+}
+
+// RSA SHA256 Encryption
+func EncryptRSA(data string) string {
+	h := sha256.New()
+	h.Write([]byte(data))
+	bs := h.Sum(nil)
+	return hex.EncodeToString(bs)
 }

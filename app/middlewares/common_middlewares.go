@@ -4,16 +4,17 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/nvanonim/fiber-emr/app/configs"
 )
 
 // RequestLogger is a middleware function that logs the details of each incoming request.
 // if body contains password, delete it
 func RequestLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		var log = configs.GetLogger()
 		// Read request body
 		var bodyBytes []byte
 		if c.Request.Body != nil {
@@ -35,10 +36,12 @@ func RequestLogger() gin.HandlerFunc {
 		}
 
 		// Log request details
-		log.Println("==================================================")
-		log.Printf("Request: %s %s", c.Request.Method, c.Request.RequestURI)
-		log.Printf("Header: %v", c.Request.Header)
-		log.Printf("Body: %s", string(bodyBytes))
+		log.Info("==================================================")
+		log.Infof("Request: %s %s", c.Request.Method, c.Request.RequestURI)
+		log.Debugf("Header: %v", c.Request.Header)
+		if len(bodyBytes) > 0 {
+			log.Infof("Body: %s", bodyBytes)
+		}
 
 		// Call the next handler
 		c.Next()
@@ -48,6 +51,7 @@ func RequestLogger() gin.HandlerFunc {
 // ResponseLogger is a middleware function that logs the details of each outgoing response.
 func ResponseLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		var log = configs.GetLogger()
 		// Create a response writer to capture the response
 		w := &responseLogger{body: bytes.NewBufferString(""), ResponseWriter: c.Writer}
 
@@ -58,7 +62,7 @@ func ResponseLogger() gin.HandlerFunc {
 		c.Next()
 
 		// Log response details
-		log.Printf("Response: %d with Body: %s", w.status, w.body.String())
+		log.Infof("Response: %d with Body: %s", w.status, w.body.String())
 	}
 }
 

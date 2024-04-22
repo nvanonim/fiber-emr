@@ -19,8 +19,9 @@ const (
 
 // Response Message Enum
 const (
-	RM_Success      = "Success"
-	RM_Unauthorized = "Invalid JWT Token"
+	RM_Success        = "Success"
+	RM_Unauthorized   = "Invalid JWT Token"
+	RM_InvalidRequest = "Invalid Request"
 )
 
 // GenerateResponse generates a response body. Data is optional

@@ -27,9 +27,6 @@ func main() {
 }
 
 func initConfigs() {
-	// Setup the logger
-	configs.SetupLogger()
-
 	// Check if an environment argument is provided
 	var env string
 	if len(os.Args) > 1 {
@@ -40,6 +37,8 @@ func initConfigs() {
 
 	// Load the environment variables
 	configs.LoadEnv(env)
+	// Setup the logger
+	configs.SetupLogger()
 	// Setup the database
 	configs.SetupDB()
 }

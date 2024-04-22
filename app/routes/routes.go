@@ -44,7 +44,7 @@ func PatientRoutes(db *gorm.DB, r *gin.Engine) {
 	patientRepo := repositories.NewPatientRepository(db)
 	patientController := controllers.NewPatientController(patientRepo)
 
-	patient := r.Group("/patient", middlewares.Protected())
+	patient := r.Group("/patient", middlewares.Protected(), middlewares.ValidateSignature())
 	patient.POST("/add", patientController.AddPatient)
 	patient.GET("/list", patientController.ListPatients)
 	patient.GET("/get/:id", patientController.GetPatient)

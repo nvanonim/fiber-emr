@@ -1,6 +1,8 @@
 package configs
 
 import (
+	"fmt"
+
 	"github.com/joho/godotenv"
 )
 
@@ -15,11 +17,12 @@ func LoadEnv(env string) {
 	case "production":
 		filename = ".env.production"
 	default:
-		log.Error("Unknown environment: ", env)
+		fmt.Println("Invalid environment argument. Defaulting to local environment.")
 	}
+	fmt.Println("Loading environment variables from: ", filename)
 
 	err := godotenv.Load(filename)
 	if err != nil {
-		log.Error("Error loading .env file: ", err)
+		fmt.Println("Error loading environment variables: ", err)
 	}
 }
